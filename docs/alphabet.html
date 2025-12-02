@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alphabet Adventure</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-bUg1TcxCvgkYym4PL2nPDNiEzj9TKZjtO7g2HzVIM5kVmGdb16rDpD+sNufnzVbrhVrwefuwrZmRJprXJ6Gx8w==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <style>
+    :root {
+      --bg-1: #f6f3ff;
+      --bg-2: #e7f7ff;
+      --panel: #ffffff;
+      --accent: #f7b5d5;
+      --accent-2: #a6d9ff;
+      --accent-3: #ffe8a3;
+      --text: #2f2f46;
+      --muted: #6b6b83;
+      --shadow: 0 14px 50px rgba(64, 77, 103, 0.15);
+      --radius: 24px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Nunito', system-ui, -apple-system, sans-serif;
+      background: radial-gradient(circle at 15% 20%, #fdf1ff 0, #f4f6ff 20%, var(--bg-1) 35%), radial-gradient(circle at 80% 0%, #e8fbff, #e5edff 45%, var(--bg-2) 65%);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+
+    main {
+      width: min(1100px, 100%);
+    }
+
+    .panel {
+      background: var(--panel);
+      border-radius: var(--radius);
+      padding: 32px 28px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      animation: floatIn 300ms ease;
+    }
+
+    @keyframes floatIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1, h2, h3 {
+      font-family: 'Fredoka', 'Nunito', sans-serif;
+      margin: 0;
+      color: var(--text);
+      letter-spacing: 0.5px;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 3vw + 1rem, 3.2rem);
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    h1 .sparkle {
+      color: #ffb2c9;
+    }
+
+    p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .hero-button {
+      margin-top: 22px;
+      padding: 20px 24px;
+      font-size: 1.4rem;
+      width: 100%;
+      border: none;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #ffa9c7, #ffd6a5);
+      color: #3b2453;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      box-shadow: 0 12px 30px rgba(255, 169, 199, 0.35);
+      transition: transform 120ms ease, box-shadow 120ms ease;
+    }
+
+    .hero-button:active {
+      transform: translateY(2px);
+      box-shadow: 0 6px 20px rgba(255, 169, 199, 0.28);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .top-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    .badge {
+      background: #e4f2ff;
+      color: #265b88;
+      padding: 8px 14px;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .tiny {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .prompt {
+      margin-top: 22px;
+      font-size: clamp(1.8rem, 2vw + 1rem, 2.5rem);
+      font-weight: 700;
+      color: #314266;
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    .letter-card {
+      margin: 18px auto 26px;
+      width: min(360px, 80vw);
+      height: min(320px, 70vw);
+      background: linear-gradient(180deg, #fff8f4, #fff);
+      border-radius: 32px;
+      box-shadow: 0 16px 45px rgba(43, 53, 87, 0.15);
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .letter-card::after {
+      content: '';
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, #ffe1f3, transparent 60%);
+      right: -40px;
+      top: -60px;
+      opacity: 0.7;
+    }
+
+    .letter {
+      font-family: 'Fredoka', 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: clamp(6rem, 15vw, 10rem);
+      color: #ff7ca3;
+      text-shadow: 0 6px 14px rgba(255, 158, 191, 0.35);
+      position: relative;
+      z-index: 1;
+      letter-spacing: 2px;
+    }
+
+    .button-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin: 10px 0 6px;
+    }
+
+    .big-button {
+      padding: 16px 14px;
+      border: none;
+      border-radius: 16px;
+      background: #ecf4ff;
+      color: #1f3f66;
+      font-weight: 800;
+      font-size: 1.08rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 10px 26px rgba(58, 95, 141, 0.12);
+      cursor: pointer;
+      transition: transform 100ms ease, box-shadow 120ms ease, background 150ms ease;
+    }
+
+    .big-button i {
+      font-size: 1.2em;
+    }
+
+    .big-button.primary {
+      background: linear-gradient(135deg, #a3d9ff, #c5f5ff);
+      color: #104b6f;
+    }
+
+    .big-button.accent {
+      background: linear-gradient(135deg, #ffd9ef, #fff1d6);
+      color: #6f2d47;
+    }
+
+    .big-button.danger {
+      background: linear-gradient(135deg, #ffd6d6, #ffe2d8);
+      color: #872525;
+    }
+
+    .big-button:active {
+      transform: translateY(2px);
+      box-shadow: 0 6px 16px rgba(58, 95, 141, 0.12);
+    }
+
+    .answer-card {
+      margin-top: 16px;
+      padding: 18px 16px;
+      border-radius: 16px;
+      background: #fff5ff;
+      border: 2px dashed #ffc3e0;
+      animation: popIn 200ms ease;
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.97); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .answer-title {
+      font-weight: 800;
+      color: #b33a6c;
+      margin-bottom: 6px;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .answer-body {
+      font-size: 1.2rem;
+      color: #4a2f4e;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .footer {
+      margin-top: 20px;
+      font-size: 0.95rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .status {
+      margin: 8px 0 0;
+      font-size: 0.98rem;
+      color: #4b4b69;
+      text-align: center;
+      min-height: 24px;
+    }
+
+    @media (max-width: 640px) {
+      .panel {
+        padding: 22px 16px;
+      }
+
+      .button-row {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      }
+
+      .big-button {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section id="start-screen" class="panel">
+      <h1><span class="sparkle"><i class="fa-solid fa-wand-magic-sparkles"></i></span> Alphabet Adventure</h1>
+      <p>Tap the big button below to start colourful flashcards that help little learners hear and see their letters.</p>
+      <button id="start-btn" class="hero-button"><i class="fa-solid fa-play"></i> Click here to play</button>
+      <div class="footer">Copyright (c) 2025, Bracket Productions — Free Software</div>
+    </section>
+
+    <section id="game-screen" class="panel hidden" aria-live="polite">
+      <div class="top-row">
+        <div>
+          <h2 style="margin-bottom:6px;">Flashcard Time</h2>
+        </div>
+        <div class="controls">
+          <button id="listen-btn" class="big-button accent"><i class="fa-solid fa-ear-listen"></i> Listen</button>
+          <button id="mute-btn" class="big-button" aria-pressed="false"><i class="fa-solid fa-volume-high"></i> Voice on</button>
+          <button id="exit-btn" class="big-button danger"><i class="fa-solid fa-xmark"></i> Exit</button>
+      </div>
+    </div>
+
+      <div id="prompt-text" class="prompt">What letter is this?</div>
+
+      <div class="letter-card">
+        <div id="letter-display" class="letter">A</div>
+      </div>
+
+      <div class="button-row">
+        <button id="repeat-btn" class="big-button primary"><i class="fa-solid fa-rotate-left"></i> Repeat</button>
+        <button id="answer-btn" class="big-button accent"><i class="fa-regular fa-circle-question"></i> Answer</button>
+      </div>
+
+      <div id="answer-panel" class="answer-card hidden">
+        <div class="answer-title"><i class="fa-solid fa-lightbulb"></i> Answer</div>
+        <div id="answer-text" class="answer-body">A is for Apple</div>
+        <div class="button-row" style="margin-top:14px;">
+          <button id="continue-btn" class="big-button primary"><i class="fa-solid fa-arrow-right"></i> Continue</button>
+        </div>
+      </div>
+
+      <div id="status-line" class="status tiny" aria-live="polite"></div>
+      <div class="footer">Copyright (c) 2025, Bracket Productions — Free Software</div>
+    </section>
+  </main>
+
+  <script>
+    const LETTERS = [
+      { letter: 'A', mnemonics: ['A is for Apple', 'A is for Airplane', 'A is for Ant'] },
+      { letter: 'B', mnemonics: ['B is for Banana', 'B is for Balloon', 'B is for Boat'] },
+      { letter: 'C', mnemonics: ['C is for Cat', 'C is for Carrot', 'C is for Cloud'] },
+      { letter: 'D', mnemonics: ['D is for Duck', 'D is for Dinosaur', 'D is for Drum'] },
+      { letter: 'E', mnemonics: ['E is for Elephant', 'E is for Egg', 'E is for Engine'] },
+      { letter: 'F', mnemonics: ['F is for Fox', 'F is for Flower', 'F is for Firetruck'] },
+      { letter: 'G', mnemonics: ['G is for Giraffe', 'G is for Guitar', 'G is for Garden'] },
+      { letter: 'H', mnemonics: ['H is for Hippo', 'H is for House', 'H is for Helicopter'] },
+      { letter: 'I', mnemonics: ['I is for Iguana', 'I is for Ice cream', 'I is for Igloo'] },
+      { letter: 'J', mnemonics: ['J is for Jellyfish', 'J is for Juice', 'J is for Jungle'] },
+      { letter: 'K', mnemonics: ['K is for Koala', 'K is for Kite', 'K is for Kiwi'] },
+      { letter: 'L', mnemonics: ['L is for Lion', 'L is for Lemon', 'L is for Ladybug'] },
+      { letter: 'M', mnemonics: ['M is for Monkey', 'M is for Moon', 'M is for Marshmallow'] },
+      { letter: 'N', mnemonics: ['N is for Nest', 'N is for Notebook', 'N is for Nutcracker'] },
+      { letter: 'O', mnemonics: ['O is for Octopus', 'O is for Orange', 'O is for Owl'] },
+      { letter: 'P', mnemonics: ['P is for Penguin', 'P is for Pizza', 'P is for Pumpkin'] },
+      { letter: 'Q', mnemonics: ['Q is for Queen', 'Q is for Quilt', 'Q is for Quail'] },
+      { letter: 'R', mnemonics: ['R is for Rainbow', 'R is for Rocket', 'R is for Rabbit'] },
+      { letter: 'S', mnemonics: ['S is for Sun', 'S is for Star', 'S is for Sandwich'] },
+      { letter: 'T', mnemonics: ['T is for Turtle', 'T is for Train', 'T is for Tree'] },
+      { letter: 'U', mnemonics: ['U is for Umbrella', 'U is for Unicorn', 'U is for Ukulele'] },
+      { letter: 'V', mnemonics: ['V is for Violin', 'V is for Volcano', 'V is for Van'] },
+      { letter: 'W', mnemonics: ['W is for Whale', 'W is for Watermelon', 'W is for Windmill'] },
+      { letter: 'X', mnemonics: ['X is for Xylophone', 'X is for X-ray'] },
+      { letter: 'Y', mnemonics: ['Y is for Yak', 'Y is for Yacht', 'Y is for Yogurt'] },
+      { letter: 'Z', mnemonics: ['Z is for Zebra', 'Z is for Zipper', 'Z is for Zoo'] }
+    ];
+
+    const startScreen = document.getElementById('start-screen');
+    const gameScreen = document.getElementById('game-screen');
+    const startBtn = document.getElementById('start-btn');
+    const exitBtn = document.getElementById('exit-btn');
+    const repeatBtn = document.getElementById('repeat-btn');
+    const answerBtn = document.getElementById('answer-btn');
+    const continueBtn = document.getElementById('continue-btn');
+    const muteBtn = document.getElementById('mute-btn');
+    const listenBtn = document.getElementById('listen-btn');
+    const promptText = document.getElementById('prompt-text');
+    const letterDisplay = document.getElementById('letter-display');
+    const answerPanel = document.getElementById('answer-panel');
+    const answerText = document.getElementById('answer-text');
+    const statusLine = document.getElementById('status-line');
+
+    let deck = [];
+    let currentCard = null;
+    let currentAnswer = '';
+    let isMuted = false;
+    const speechReady = 'speechSynthesis' in window;
+    const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognitionReady = Boolean(Recognition);
+    let recognition;
+    let isListening = false;
+
+    // Map common phonetic renderings to letters
+    const letterSounds = {
+      a: 'A', ay: 'A',
+      b: 'B', bee: 'B', be: 'B',
+      c: 'C', sea: 'C', see: 'C',
+      d: 'D', dee: 'D',
+      e: 'E', ee: 'E',
+      f: 'F', eff: 'F',
+      g: 'G', gee: 'G',
+      h: 'H', aitch: 'H', haitch: 'H',
+      i: 'I', eye: 'I',
+      j: 'J', jay: 'J',
+      k: 'K', kay: 'K',
+      l: 'L', el: 'L',
+      m: 'M', em: 'M',
+      n: 'N', en: 'N',
+      o: 'O', oh: 'O',
+      p: 'P', pee: 'P',
+      q: 'Q', cue: 'Q', queue: 'Q',
+      r: 'R', ar: 'R', are: 'R',
+      s: 'S', ess: 'S',
+      t: 'T', tee: 'T',
+      u: 'U', you: 'U', yew: 'U',
+      v: 'V', vee: 'V',
+      w: 'W', 'double you': 'W', 'double u': 'W', w: 'W',
+      x: 'X', ex: 'X',
+      y: 'Y', why: 'Y', wy: 'Y',
+      z: 'Z', zee: 'Z', zed: 'Z'
+    };
+
+    function shuffleDeck() {
+      deck = [...LETTERS];
+      for (let i = deck.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [deck[i], deck[j]] = [deck[j], deck[i]];
+      }
+    }
+
+    function drawCard() {
+      if (deck.length === 0) {
+        shuffleDeck();
+      }
+      currentCard = deck.pop();
+      currentAnswer = '';
+      letterDisplay.textContent = currentCard.letter;
+      promptText.textContent = 'What letter is this?';
+      answerPanel.classList.add('hidden');
+      statusLine.textContent = speechReady && !isMuted ? 'Listening for the prompt…' : 'Prompt ready to read aloud.';
+      speakPrompt();
+      if (isListening) {
+        startRecognition();
+      }
+    }
+
+    function speakText(text) {
+      if (!speechReady || isMuted || !text) {
+        return;
+      }
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = 'en-US';
+      utter.rate = 0.9; // Slightly slower for young listeners
+      utter.pitch = 1;
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utter);
+    }
+
+    function speakPrompt() {
+      if (!currentCard) return;
+      // Keep the prompt question separate from the answer so we do not reveal the letter.
+      speakText('What letter is this?');
+    }
+
+    function speakAnswer() {
+      if (!currentAnswer) return;
+      speakText(currentAnswer);
+    }
+
+    function pickAnswer() {
+      const options = currentCard.mnemonics;
+      const choice = options[Math.floor(Math.random() * options.length)];
+      currentAnswer = choice;
+      answerText.textContent = choice;
+    }
+
+    function showAnswer() {
+      if (!currentCard) return;
+      pickAnswer();
+      answerPanel.classList.remove('hidden');
+      statusLine.textContent = speechReady && !isMuted ? 'Reading the answer…' : 'Answer ready for reading.';
+      speakAnswer();
+    }
+
+    function showGame() {
+      startScreen.classList.add('hidden');
+      gameScreen.classList.remove('hidden');
+      drawCard();
+    }
+
+    function showStart() {
+      window.speechSynthesis?.cancel();
+      isListening = false;
+      stopRecognition();
+      listenBtn.innerHTML = '<i class="fa-solid fa-ear-listen"></i> Listen';
+      listenBtn.setAttribute('aria-pressed', 'false');
+      gameScreen.classList.add('hidden');
+      startScreen.classList.remove('hidden');
+    }
+
+    startBtn.addEventListener('click', showGame);
+    exitBtn.addEventListener('click', showStart);
+
+    repeatBtn.addEventListener('click', () => {
+      promptText.textContent = 'What letter is this?';
+      statusLine.textContent = speechReady && !isMuted ? 'Repeating the prompt…' : 'Grown-up: say “What letter is this?”';
+      speakPrompt();
+    });
+
+    answerBtn.addEventListener('click', showAnswer);
+
+    continueBtn.addEventListener('click', () => {
+      drawCard();
+    });
+
+    muteBtn.addEventListener('click', () => {
+      isMuted = !isMuted;
+      muteBtn.setAttribute('aria-pressed', String(isMuted));
+      if (isMuted) {
+        muteBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i> Voice off';
+        statusLine.textContent = 'Voice muted. Read the prompts out loud.';
+        window.speechSynthesis?.cancel();
+      } else {
+        muteBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Voice on';
+        statusLine.textContent = 'Voice on. Tap repeat to hear it again.';
+        speakPrompt();
+      }
+    });
+
+    function parseHeardLetter(text) {
+      if (!text) return null;
+      const cleaned = text.trim().toLowerCase();
+      if (letterSounds[cleaned]) return letterSounds[cleaned];
+      const words = cleaned.split(/\s+/);
+      for (let i = 0; i < words.length; i += 1) {
+        const w = words[i];
+        if (letterSounds[w]) return letterSounds[w];
+        if (i < words.length - 1) {
+          const pair = `${w} ${words[i + 1]}`;
+          if (letterSounds[pair]) return letterSounds[pair];
+        }
+      }
+      // Try first alphabetic letter if it was spoken as a single character.
+      const letter = cleaned.replace(/[^a-z]/gi, '').charAt(0);
+      return letter ? letter.toUpperCase() : null;
+    }
+
+    function handleRecognitionResult(event) {
+      for (let i = event.resultIndex; i < event.results.length; i += 1) {
+        const result = event.results[i];
+        if (!result.isFinal) continue;
+        const transcript = result[0].transcript;
+        const heard = parseHeardLetter(transcript);
+        if (!heard || !currentCard) continue;
+        if (heard === currentCard.letter) {
+          showAnswer();
+          statusLine.textContent = 'Great job! You said the right letter.';
+        }
+      }
+    }
+
+    function startRecognition() {
+      if (!recognitionReady || !isListening) return;
+      if (!recognition) {
+        recognition = new Recognition();
+        recognition.lang = 'en-US';
+        recognition.continuous = true;
+        recognition.interimResults = false;
+        recognition.onresult = handleRecognitionResult;
+        recognition.onerror = () => {
+          statusLine.textContent = 'Could not hear answers. Check your microphone.';
+        };
+        recognition.onend = () => {
+          // Restart automatically while listening
+          if (isListening) {
+            startRecognition();
+          }
+        };
+      }
+      try {
+        recognition.start();
+        statusLine.textContent = 'Listening for the letter...';
+      } catch (_) {
+        // Ignore errors when start is called while already running.
+      }
+    }
+
+    function stopRecognition() {
+      if (recognition) {
+        recognition.onend = null;
+        recognition.stop();
+        recognition = null;
+      }
+    }
+
+    listenBtn.addEventListener('click', () => {
+      if (!recognitionReady) return;
+      isListening = !isListening;
+      if (isListening) {
+        listenBtn.innerHTML = '<i class="fa-solid fa-ear-listen"></i> Listening...';
+        listenBtn.setAttribute('aria-pressed', 'true');
+        startRecognition();
+      } else {
+        listenBtn.innerHTML = '<i class="fa-solid fa-ear-listen"></i> Listen';
+        listenBtn.setAttribute('aria-pressed', 'false');
+        statusLine.textContent = 'Listening stopped.';
+        stopRecognition();
+      }
+    });
+
+    if (!speechReady) {
+      muteBtn.disabled = true;
+      muteBtn.textContent = 'Voice unavailable';
+      muteBtn.classList.add('disabled');
+      statusLine.textContent = 'Voice unavailable in this browser. Read prompts aloud.';
+    }
+
+    if (!recognitionReady) {
+      listenBtn.disabled = true;
+      listenBtn.textContent = 'Listen unavailable';
+      listenBtn.classList.add('disabled');
+    }
+  </script>
+</body>
+</html>
